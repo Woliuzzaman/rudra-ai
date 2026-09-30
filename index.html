@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="bn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#080b17">
+<link rel="manifest" href="/manifest.webmanifest">
+<title>RUDRA AI v2</title>
+<style>
+:root{--bg:#070a13;--card:rgba(255,255,255,.075);--line:rgba(255,255,255,.12);--blue:#5d7cff}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 50% 5%,#263d70 0,#10182b 26%,var(--bg) 60%);color:#fff;font-family:system-ui,-apple-system,"Noto Sans Bengali",sans-serif;min-height:100vh}
+.app{max-width:650px;margin:auto;padding:18px 15px 28px}.top{display:flex;justify-content:space-between;align-items:center}.badge{padding:7px 11px;border:1px solid var(--line);border-radius:999px;background:var(--card);font-size:12px}
+.hero{text-align:center;padding:12px 0 18px}.orb{width:132px;height:132px;margin:8px auto 15px;border-radius:50%;position:relative;background:radial-gradient(circle at 50% 44%,#fff 0 5%,#b8d8ff 7%,#6997ff 20%,#4159ff 40%,#151c51 68%,#0a0e25 72%);box-shadow:0 0 25px #6b82ff,0 0 85px rgba(71,100,255,.35);animation:float 3s ease-in-out infinite}
+.orb:before,.orb:after{content:"";position:absolute;inset:-11px;border:1px solid rgba(124,154,255,.45);border-radius:50%;animation:spin 7s linear infinite}.orb:after{inset:-22px;border-color:rgba(124,154,255,.15);animation-direction:reverse;animation-duration:11s}
+.listening .orb{animation:pulse .8s ease-in-out infinite}.thinking .orb{animation:pulse 1.2s ease-in-out infinite}
+@keyframes float{50%{transform:translateY(-6px)}}@keyframes pulse{50%{transform:scale(1.08);filter:brightness(1.25)}}@keyframes spin{to{transform:rotate(360deg)}}h1{font-size:31px;margin:0 0 2px;letter-spacing:.5px}.sub{opacity:.62;font-size:14px}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:25px;padding:13px;backdrop-filter:blur(16px);box-shadow:0 18px 50px rgba(0,0,0,.25)}
+.chat{height:42vh;min-height:280px;overflow:auto;display:flex;flex-direction:column;gap:10px;padding:5px}.msg{max-width:88%;padding:11px 14px;border-radius:18px;line-height:1.55;white-space:pre-wrap}.ai{align-self:flex-start;background:rgba(255,255,255,.09)}.me{align-self:flex-end;background:linear-gradient(135deg,#496dff,#7158ff)}
+.quick{display:flex;gap:7px;overflow:auto;padding:9px 2px}.quick button{white-space:nowrap;background:rgba(255,255,255,.07);color:#fff;border:1px solid var(--line);border-radius:999px;padding:8px 11px}
+.controls{display:flex;gap:8px}.controls input{flex:1;min-width:0;border:1px solid var(--line);background:rgba(0,0,0,.25);color:#fff;border-radius:16px;padding:13px;font-size:16px;outline:none}.controls button{width:51px;border:0;border-radius:16px;font-size:20px;cursor:pointer}.mic{background:#fff}.send{background:var(--blue);color:#fff}.status{text-align:center;font-size:12px;opacity:.55;padding-top:9px}
+.install{display:none;margin:11px 0 0;width:100%;padding:12px;border:0;border-radius:15px;background:#fff;color:#111;font-weight:700}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="top"><span class="badge">● RUDRA AI v2</span><span class="badge" id="online">ONLINE</span></div>
+  <div class="hero">
+    <div class="orb" id="orb"></div>
+    <h1>RUDRA AI</h1><div class="sub">আপনার ব্যক্তিগত বাংলা Voice Assistant</div>
+  </div>
+  <div class="panel">
+    <div class="chat" id="chat">
+      <div class="msg ai">আসসালামু আলাইকুম! আমি RUDRA AI। 🎙️ মাইক্রোফোন চাপ দিয়ে বাংলায় কথা বলুন অথবা নিচে লিখুন।</div>
+    </div>
+    <div class="quick">
+      <button data-q="আজ আমাকে একটি পড়ার রুটিন তৈরি করে দাও।">📚 পড়ার রুটিন</button>
+      <button data-q="ষষ্ঠ শ্রেণির Present Perfect Tense সহজভাবে বুঝিয়ে দাও।">✏️ পড়াশোনা</button>
+      <button data-q="একটি প্রিমিয়াম ফেসবুক ক্যাপশন লিখে দাও।">✨ ক্যাপশন</button>
+    </div>
+    <div class="controls">
+      <input id="input" placeholder="বলুন, RUDRA AI..." autocomplete="off">
+      <button class="mic" id="mic">🎙️</button>
+      <button class="send" id="send">➤</button>
+    </div>
+    <button class="install" id="install">📲 ফোনে App হিসেবে Install করুন</button>
+    <div class="status" id="status">প্রস্তুত</div>
+  </div>
+</div>
+<script>
+const chat=document.querySelector('#chat'), input=document.querySelector('#input'), status=document.querySelector('#status'), orb=document.querySelector('#orb');
+function add(t,c){let d=document.createElement('div');d.className='msg '+c;d.textContent=t;chat.appendChild(d);chat.scrollTop=chat.scrollHeight;return d}
+function setMode(m){document.body.classList.toggle('listening',m==='listen');document.body.classList.toggle('thinking',m==='think')}
+async function ask(t){t=t.trim();if(!t)return;add(t,'me');input.value='';status.textContent='ভাবছি...';setMode('think');
+try{let r=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:t})});let j=await r.json();if(!r.ok)throw Error(j.error||'সমস্যা');add(j.reply,'ai');status.textContent='প্রস্তুত';setMode('');
+if('speechSynthesis'in window){speechSynthesis.cancel();let u=new SpeechSynthesisUtterance(j.reply);u.lang='bn-BD';u.rate=.94;u.onstart=()=>setMode('think');u.onend=()=>setMode('');speechSynthesis.speak(u)}}catch(e){add(e.message,'ai');status.textContent='সমস্যা হয়েছে';setMode('')}}
+document.querySelector('#send').onclick=()=>ask(input.value);input.addEventListener('keydown',e=>{if(e.key==='Enter')ask(input.value)});
+document.querySelectorAll('.quick button').forEach(b=>b.onclick=()=>ask(b.dataset.q));
+const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+if(SR){const rec=new SR();rec.lang='bn-BD';rec.interimResults=false;rec.maxAlternatives=1;
+document.querySelector('#mic').onclick=()=>{try{rec.start();status.textContent='শুনছি...';setMode('listen')}catch(e){}};
+rec.onresult=e=>{input.value=e.results[0][0].transcript;setMode('');ask(input.value)};rec.onerror=()=>{status.textContent='মাইক্রোফোনে সমস্যা হয়েছে';setMode('')};rec.onend=()=>{if(status.textContent==='শুনছি...')status.textContent='প্রস্তুত'}
+}else{document.querySelector('#mic').disabled=true;status.textContent='এই browser voice input সমর্থন করে না'}
+let deferredPrompt;const ib=document.querySelector('#install');window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;ib.style.display='block'});ib.onclick=async()=>{if(deferredPrompt){deferredPrompt.prompt();await deferredPrompt.userChoice;deferredPrompt=null;ib.style.display='none'}};
+</script>
+</body>
+</html>
