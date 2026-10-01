@@ -1,66 +1,127 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="bn">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#080b17">
-<link rel="manifest" href="/manifest.webmanifest">
-<title>RUDRA AI v2</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b1020">
+<title>রুদ্র এআই</title>
 <style>
-:root{--bg:#070a13;--card:rgba(255,255,255,.075);--line:rgba(255,255,255,.12);--blue:#5d7cff}
-*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 50% 5%,#263d70 0,#10182b 26%,var(--bg) 60%);color:#fff;font-family:system-ui,-apple-system,"Noto Sans Bengali",sans-serif;min-height:100vh}
-.app{max-width:650px;margin:auto;padding:18px 15px 28px}.top{display:flex;justify-content:space-between;align-items:center}.badge{padding:7px 11px;border:1px solid var(--line);border-radius:999px;background:var(--card);font-size:12px}
-.hero{text-align:center;padding:12px 0 18px}.orb{width:132px;height:132px;margin:8px auto 15px;border-radius:50%;position:relative;background:radial-gradient(circle at 50% 44%,#fff 0 5%,#b8d8ff 7%,#6997ff 20%,#4159ff 40%,#151c51 68%,#0a0e25 72%);box-shadow:0 0 25px #6b82ff,0 0 85px rgba(71,100,255,.35);animation:float 3s ease-in-out infinite}
-.orb:before,.orb:after{content:"";position:absolute;inset:-11px;border:1px solid rgba(124,154,255,.45);border-radius:50%;animation:spin 7s linear infinite}.orb:after{inset:-22px;border-color:rgba(124,154,255,.15);animation-direction:reverse;animation-duration:11s}
-.listening .orb{animation:pulse .8s ease-in-out infinite}.thinking .orb{animation:pulse 1.2s ease-in-out infinite}
-@keyframes float{50%{transform:translateY(-6px)}}@keyframes pulse{50%{transform:scale(1.08);filter:brightness(1.25)}}@keyframes spin{to{transform:rotate(360deg)}}h1{font-size:31px;margin:0 0 2px;letter-spacing:.5px}.sub{opacity:.62;font-size:14px}
-.panel{background:var(--card);border:1px solid var(--line);border-radius:25px;padding:13px;backdrop-filter:blur(16px);box-shadow:0 18px 50px rgba(0,0,0,.25)}
-.chat{height:42vh;min-height:280px;overflow:auto;display:flex;flex-direction:column;gap:10px;padding:5px}.msg{max-width:88%;padding:11px 14px;border-radius:18px;line-height:1.55;white-space:pre-wrap}.ai{align-self:flex-start;background:rgba(255,255,255,.09)}.me{align-self:flex-end;background:linear-gradient(135deg,#496dff,#7158ff)}
-.quick{display:flex;gap:7px;overflow:auto;padding:9px 2px}.quick button{white-space:nowrap;background:rgba(255,255,255,.07);color:#fff;border:1px solid var(--line);border-radius:999px;padding:8px 11px}
-.controls{display:flex;gap:8px}.controls input{flex:1;min-width:0;border:1px solid var(--line);background:rgba(0,0,0,.25);color:#fff;border-radius:16px;padding:13px;font-size:16px;outline:none}.controls button{width:51px;border:0;border-radius:16px;font-size:20px;cursor:pointer}.mic{background:#fff}.send{background:var(--blue);color:#fff}.status{text-align:center;font-size:12px;opacity:.55;padding-top:9px}
-.install{display:none;margin:11px 0 0;width:100%;padding:12px;border:0;border-radius:15px;background:#fff;color:#111;font-weight:700}
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { height: 100%; margin: 0; }
+  body {
+    background: #0b1020; color: #e8ecf5;
+    font-family: "Noto Sans Bengali", "Kalpurush", system-ui, sans-serif;
+    display: flex; flex-direction: column;
+  }
+  header { padding: 14px 16px; text-align: center; font-size: 20px; font-weight: 700; border-bottom: 1px solid #1d2540; }
+  header small { display: block; font-size: 12px; font-weight: 400; color: #8b95b5; margin-top: 2px; }
+  #chat { flex: 1; overflow-y: auto; padding: 14px; display: flex; flex-direction: column; gap: 10px; }
+  .msg { max-width: 85%; padding: 10px 14px; border-radius: 16px; line-height: 1.5; font-size: 16px; white-space: pre-wrap; word-wrap: break-word; }
+  .user { align-self: flex-end; background: #2b5cff; border-bottom-right-radius: 4px; }
+  .bot { align-self: flex-start; background: #1a2240; border-bottom-left-radius: 4px; }
+  .sys { align-self: center; color: #8b95b5; font-size: 13px; }
+  #quick { display: flex; gap: 8px; overflow-x: auto; padding: 8px 12px; }
+  #quick button { flex: none; background: #1a2240; color: #cfd6ee; border: 1px solid #2a3560; border-radius: 18px; padding: 8px 14px; font-size: 14px; font-family: inherit; }
+  #bar { display: flex; gap: 8px; align-items: center; padding: 10px 12px calc(10px + env(safe-area-inset-bottom, 0px)); border-top: 1px solid #1d2540; }
+  #txt { flex: 1; background: #141b33; color: #e8ecf5; border: 1px solid #2a3560; border-radius: 22px; padding: 12px 16px; font-size: 16px; font-family: inherit; outline: none; }
+  .btn { width: 48px; height: 48px; border-radius: 50%; border: none; color: #fff; font-size: 22px; flex: none; }
+  #send { background: #2b5cff; }
+  #mic { background: #e5484d; width: 56px; height: 56px; }
+  #mic.on { animation: pulse 1s infinite; background: #ff2d55; }
+  @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(255,45,85,.6); } 100% { box-shadow: 0 0 0 18px rgba(255,45,85,0); } }
 </style>
 </head>
 <body>
-<div class="app">
-  <div class="top"><span class="badge">● RUDRA AI v2</span><span class="badge" id="online">ONLINE</span></div>
-  <div class="hero">
-    <div class="orb" id="orb"></div>
-    <h1>RUDRA AI</h1><div class="sub">আপনার ব্যক্তিগত বাংলা Voice Assistant</div>
-  </div>
-  <div class="panel">
-    <div class="chat" id="chat">
-      <div class="msg ai">আসসালামু আলাইকুম! আমি RUDRA AI। 🎙️ মাইক্রোফোন চাপ দিয়ে বাংলায় কথা বলুন অথবা নিচে লিখুন।</div>
-    </div>
-    <div class="quick">
-      <button data-q="আজ আমাকে একটি পড়ার রুটিন তৈরি করে দাও।">📚 পড়ার রুটিন</button>
-      <button data-q="ষষ্ঠ শ্রেণির Present Perfect Tense সহজভাবে বুঝিয়ে দাও।">✏️ পড়াশোনা</button>
-      <button data-q="একটি প্রিমিয়াম ফেসবুক ক্যাপশন লিখে দাও।">✨ ক্যাপশন</button>
-    </div>
-    <div class="controls">
-      <input id="input" placeholder="বলুন, RUDRA AI..." autocomplete="off">
-      <button class="mic" id="mic">🎙️</button>
-      <button class="send" id="send">➤</button>
-    </div>
-    <button class="install" id="install">📲 ফোনে App হিসেবে Install করুন</button>
-    <div class="status" id="status">প্রস্তুত</div>
-  </div>
+<header>রুদ্র এআই<small>আপনার বাংলা ভয়েস অ্যাসিস্ট্যান্ট</small></header>
+<div id="chat"><div class="msg sys">মাইক চেপে বাংলায় কথা বলুন অথবা নিচে লিখুন</div></div>
+<div id="quick">
+  <button>আজকের তারিখ কত?</button>
+  <button>একটা ছোট গল্প বলো</button>
+  <button>আজকের জন্য একটা ভালো কথা বলো</button>
+  <button>একটা মজার ধাঁধা দাও</button>
 </div>
+<div id="bar">
+  <input id="txt" type="text" placeholder="এখানে লিখুন..." autocomplete="off">
+  <button id="send" class="btn" aria-label="পাঠান">➤</button>
+  <button id="mic" class="btn" aria-label="কথা বলুন">🎤</button>
+</div>
+
 <script>
-const chat=document.querySelector('#chat'), input=document.querySelector('#input'), status=document.querySelector('#status'), orb=document.querySelector('#orb');
-function add(t,c){let d=document.createElement('div');d.className='msg '+c;d.textContent=t;chat.appendChild(d);chat.scrollTop=chat.scrollHeight;return d}
-function setMode(m){document.body.classList.toggle('listening',m==='listen');document.body.classList.toggle('thinking',m==='think')}
-async function ask(t){t=t.trim();if(!t)return;add(t,'me');input.value='';status.textContent='ভাবছি...';setMode('think');
-try{let r=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:t})});let j=await r.json();if(!r.ok)throw Error(j.error||'সমস্যা');add(j.reply,'ai');status.textContent='প্রস্তুত';setMode('');
-if('speechSynthesis'in window){speechSynthesis.cancel();let u=new SpeechSynthesisUtterance(j.reply);u.lang='bn-BD';u.rate=.94;u.onstart=()=>setMode('think');u.onend=()=>setMode('');speechSynthesis.speak(u)}}catch(e){add(e.message,'ai');status.textContent='সমস্যা হয়েছে';setMode('')}}
-document.querySelector('#send').onclick=()=>ask(input.value);input.addEventListener('keydown',e=>{if(e.key==='Enter')ask(input.value)});
-document.querySelectorAll('.quick button').forEach(b=>b.onclick=()=>ask(b.dataset.q));
-const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-if(SR){const rec=new SR();rec.lang='bn-BD';rec.interimResults=false;rec.maxAlternatives=1;
-document.querySelector('#mic').onclick=()=>{try{rec.start();status.textContent='শুনছি...';setMode('listen')}catch(e){}};
-rec.onresult=e=>{input.value=e.results[0][0].transcript;setMode('');ask(input.value)};rec.onerror=()=>{status.textContent='মাইক্রোফোনে সমস্যা হয়েছে';setMode('')};rec.onend=()=>{if(status.textContent==='শুনছি...')status.textContent='প্রস্তুত'}
-}else{document.querySelector('#mic').disabled=true;status.textContent='এই browser voice input সমর্থন করে না'}
-let deferredPrompt;const ib=document.querySelector('#install');window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;ib.style.display='block'});ib.onclick=async()=>{if(deferredPrompt){deferredPrompt.prompt();await deferredPrompt.userChoice;deferredPrompt=null;ib.style.display='none'}};
+const chat = document.getElementById("chat");
+const txt = document.getElementById("txt");
+const micBtn = document.getElementById("mic");
+let history = [];
+let busy = false;
+
+function addMsg(text, cls) {
+  const d = document.createElement("div");
+  d.className = "msg " + cls;
+  d.textContent = text;
+  chat.appendChild(d);
+  chat.scrollTop = chat.scrollHeight;
+  return d;
+}
+
+function speak(text) {
+  if (!("speechSynthesis" in window)) return;
+  window.speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = "bn-BD";
+  const v = window.speechSynthesis.getVoices().find(v => v.lang && v.lang.toLowerCase().startsWith("bn"));
+  if (v) u.voice = v;
+  window.speechSynthesis.speak(u);
+}
+
+async function send(text) {
+  text = (text || "").trim();
+  if (!text || busy) return;
+  busy = true;
+  txt.value = "";
+  addMsg(text, "user");
+  const wait = addMsg("ভাবছি... (প্রথমবার ৫০ সেকেন্ড পর্যন্ত লাগতে পারে)", "sys");
+  try {
+    const r = await fetch("/api/chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message: text, history: history })
+    });
+    const data = await r.json();
+    wait.remove();
+    if (!r.ok || data.error) {
+      addMsg("সমস্যা: " + (data.error || "অজানা ত্রুটি"), "sys");
+    } else {
+      addMsg(data.reply, "bot");
+      history.push({ role: "user", content: text }, { role: "assistant", content: data.reply });
+      history = history.slice(-10);
+      speak(data.reply);
+    }
+  } catch (e) {
+    wait.remove();
+    addMsg("সংযোগে সমস্যা হয়েছে। ইন্টারনেট দেখে আবার চেষ্টা করুন।", "sys");
+  }
+  busy = false;
+}
+
+document.getElementById("send").onclick = () => send(txt.value);
+txt.addEventListener("keydown", e => { if (e.key === "Enter") send(txt.value); });
+document.querySelectorAll("#quick button").forEach(b => b.onclick = () => send(b.textContent));
+
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+let rec = null;
+if (SR) {
+  rec = new SR();
+  rec.lang = "bn-BD";
+  rec.interimResults = false;
+  rec.onstart = () => micBtn.classList.add("on");
+  rec.onend = () => micBtn.classList.remove("on");
+  rec.onerror = () => { micBtn.classList.remove("on"); addMsg("মাইক কাজ করছে না। মাইকের অনুমতি দিন বা লিখে পাঠান।", "sys"); };
+  rec.onresult = e => send(e.results[0][0].transcript);
+}
+micBtn.onclick = () => {
+  if (!rec) { addMsg("এই ব্রাউজারে ভয়েস ইনপুট নেই। Chrome ব্যবহার করুন।", "sys"); return; }
+  window.speechSynthesis && window.speechSynthesis.cancel();
+  try { rec.start(); } catch (e) { rec.stop(); }
+};
 </script>
 </body>
 </html>
